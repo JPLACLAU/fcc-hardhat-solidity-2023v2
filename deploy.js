@@ -9,7 +9,16 @@ async function main() {
 
   // this is a ganache private key so no problems
   const provider = new ethers.providers.JsonRpcProvider(process.env.RPC_URL);
-  const wallet = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
+  //const wallet = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
+  // that was the old model for pKey stored in .env. Now that we have it encrypted,
+  // there is a new method...
+  const encryptedJson = fs.readFileSync("./.encryptedKey.json", "utf8");
+  let wallet = new ethers.Wallet.fromEncryptedJsonSync(
+    encryptedJson,
+    process.env.PRIVATE_KEY_PASSWORD
+  );
+  wallet = await wallet.connect(provider);
+
   const abi = fs.readFileSync("./SimpleStorage_sol_SimpleStorage.abi", "utf8");
   const binary = fs.readFileSync(
     "./SimpleStorage_sol_SimpleStorage.bin",
@@ -19,11 +28,8 @@ async function main() {
   const contractFactory = new ethers.ContractFactory(abi, binary, wallet);
   console.log("Deploying, please wait...");
   const contract = await contractFactory.deploy(); //stop here, wait for contract to be deployed
-  console.log("Here is the deployment Transaction");
-  console.log(contract);
+
   const transactionReceipt = await contract.deployTransaction.wait(1);
-  console.log("Here is the Receipt");
-  console.log(transactionReceipt);
   const currentFavoriteNumber = await contract.retrieve();
   console.log("Here is the Favorite Number:");
   console.log(`This is the number: ${currentFavoriteNumber.toString()}`);
