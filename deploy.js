@@ -28,9 +28,16 @@ async function main() {
   const transactionReceipt = await contract.deployTransaction.wait(1);
   console.log("Here is the Receipt");
   console.log(transactionReceipt);
+  const currentFavoriteNumber = await contract.retrieve();
+  console.log("Here is the Favorite Number:");
+  console.log(`This is the number: ${currentFavoriteNumber.toString()}`);
+  const transactionResponse = await contract.store("7");
+  const transactionReceipt2 = await transactionResponse.wait(1);
+  const updatedFavoriteNumber = await contract.retrieve();
+  console.log(`Updated favorite number is: ${updatedFavoriteNumber}`);
 
-  console.log("Let's deploy only transaction data!");
-  const nonce = await wallet.getTransactionCount();
+  /*   console.log("Let's deploy only transaction data!");
+    const nonce = await wallet.getTransactionCount();
   const tx = {
     nonce: nonce, // a number only used once, for a tx or a mined block
     gasPrice: 20000000000,
@@ -42,7 +49,7 @@ async function main() {
   };
   const sentTxResponse = await wallet.sendTransaction(tx);
   await sentTxResponse.wait(1);
-  console.log(sentTxResponse);
+  console.log(sentTxResponse); */
 }
 
 main()
