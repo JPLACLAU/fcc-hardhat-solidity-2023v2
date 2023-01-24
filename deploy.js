@@ -8,9 +8,7 @@ async function main() {
   // HTTP://127.0.0.1:7545
 
   // this is a ganache private key so no problems
-  const provider = new ethers.providers.JsonRpcProvider(
-    "http://172.30.112.1:7545"
-  );
+  const provider = new ethers.providers.JsonRpcProvider(process.env.RPC_URL);
   const wallet = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
   const abi = fs.readFileSync("./SimpleStorage_sol_SimpleStorage.abi", "utf8");
   const binary = fs.readFileSync(
