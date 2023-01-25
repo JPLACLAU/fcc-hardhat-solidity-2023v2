@@ -10,5 +10,15 @@
   },
   "scripts": {
     "compile": "yarn solcjs --bin --abi --include-path node_modules/ --base-path . -o . SimpleStorage.sol"
+  },
+  "name": "ethers-simple-storage",
+  "version": "1.0.1",
+  "main": "index.js",
+  "repository": "https://github.com/JPLACLAU/fcc-hardhat-solidity-2023v2.git",
+  "author": "jplaclau <laclaujeanpaul@gmail.com>",
+  "license": "MIT",
+  "description": "fcc course project",
+  "devDependencies": {
+    "hardhat": "^2.12.6"
   }
 }

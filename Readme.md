@@ -13,5 +13,5 @@ that is how we must deploy, and also don't forget to clear and delete console hi
 Just write
 
 ```
-history -c`
+history -c
 ```
