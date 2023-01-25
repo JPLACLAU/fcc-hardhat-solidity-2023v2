@@ -1,44 +1,44 @@
-const ethers = require("ethers");
-const fs = require("fs-extra");
-require("dotenv").config();
+const ethers = require("ethers")
+const fs = require("fs-extra")
+require("dotenv").config()
 
 async function main() {
-  // compile them in our code
-  // compile them separately
-  // HTTP://127.0.0.1:7545
+    // compile them in our code
+    // compile them separately
+    // HTTP://127.0.0.1:7545
 
-  // this is a ganache private key so no problems
-  const provider = new ethers.providers.JsonRpcProvider(process.env.RPC_URL);
-  //const wallet = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
-  // that was the old model for pKey stored in .env. Now that we have it encrypted,
-  // there is a new method...
-  const encryptedJson = fs.readFileSync("./.encryptedKey.json", "utf8");
-  let wallet = new ethers.Wallet.fromEncryptedJsonSync(
-    encryptedJson,
-    process.env.PRIVATE_KEY_PASSWORD
-  );
-  wallet = await wallet.connect(provider);
+    // this is a ganache private key so no problems
+    const provider = new ethers.providers.JsonRpcProvider(process.env.RPC_URL)
+    //const wallet = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
+    // that was the old model for pKey stored in .env. Now that we have it encrypted,
+    // there is a new method...
+    const encryptedJson = fs.readFileSync("./.encryptedKey.json", "utf8")
+    let wallet = new ethers.Wallet.fromEncryptedJsonSync(
+        encryptedJson,
+        process.env.PRIVATE_KEY_PASSWORD
+    )
+    wallet = await wallet.connect(provider)
 
-  const abi = fs.readFileSync("./SimpleStorage_sol_SimpleStorage.abi", "utf8");
-  const binary = fs.readFileSync(
-    "./SimpleStorage_sol_SimpleStorage.bin",
-    "utf8"
-  );
+    const abi = fs.readFileSync("./SimpleStorage_sol_SimpleStorage.abi", "utf8")
+    const binary = fs.readFileSync(
+        "./SimpleStorage_sol_SimpleStorage.bin",
+        "utf8"
+    )
 
-  const contractFactory = new ethers.ContractFactory(abi, binary, wallet);
-  console.log("Deploying, please wait...");
-  const contract = await contractFactory.deploy(); //stop here, wait for contract to be deployed
+    const contractFactory = new ethers.ContractFactory(abi, binary, wallet)
+    console.log("Deploying, please wait...")
+    const contract = await contractFactory.deploy() //stop here, wait for contract to be deployed
 
-  const transactionReceipt = await contract.deployTransaction.wait(1);
-  const currentFavoriteNumber = await contract.retrieve();
-  console.log("Here is the Favorite Number:");
-  console.log(`This is the number: ${currentFavoriteNumber.toString()}`);
-  const transactionResponse = await contract.store("7");
-  const transactionReceipt2 = await transactionResponse.wait(1);
-  const updatedFavoriteNumber = await contract.retrieve();
-  console.log(`Updated favorite number is: ${updatedFavoriteNumber}`);
+    const transactionReceipt = await contract.deployTransaction.wait(1)
+    const currentFavoriteNumber = await contract.retrieve()
+    console.log("Here is the Favorite Number:")
+    console.log(`This is the number: ${currentFavoriteNumber.toString()}`)
+    const transactionResponse = await contract.store("7")
+    const transactionReceipt2 = await transactionResponse.wait(1)
+    const updatedFavoriteNumber = await contract.retrieve()
+    console.log(`Updated favorite number is: ${updatedFavoriteNumber}`)
 
-  /*   console.log("Let's deploy only transaction data!");
+    /*   console.log("Let's deploy only transaction data!");
     const nonce = await wallet.getTransactionCount();
   const tx = {
     nonce: nonce, // a number only used once, for a tx or a mined block
@@ -55,8 +55,8 @@ async function main() {
 }
 
 main()
-  .then(() => process.exit(0))
-  .catch((error) => {
-    console.error(error);
-    process.exit(1);
-  });
+    .then(() => process.exit(0))
+    .catch((error) => {
+        console.error(error)
+        process.exit(1)
+    })
